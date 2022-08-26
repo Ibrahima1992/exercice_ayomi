@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  db:
+    image: "postgres"
+    environment:
+      - POSTGRES_HOST=db
+      - POSTGRES_DB=ayomi
+      - POSTGRES_USER=ayomi
+      - POSTGRES_PASSWORD=ayomi
+    env_file:
+      - ./.env
+    ports:
+      - 5432:5432
+    restart: always
+    networks:
+      - test-ayomi
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app:rw
+    env_file:
+      - ./.env
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    environment:
+      - POSTGRES_HOST=db
+      - POSTGRES_DB=ayomi
+      - POSTGRES_USER=ayomi
+      - POSTGRES_PASSWORD=ayomi
+    depends_on:
+      - db
+    restart: always
+    networks:
+      - test-ayomi
+
+networks:
+  test-ayomi:

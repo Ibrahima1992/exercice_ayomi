@@ -1,0 +1,12 @@
+*.c
+*.pyc
+*.pyo
+*.so
+*.pkl
+.cache
+htmlcov
+.coverage
+pylint.html
+scripts/managed_report.venv
+.vscode
+*.back
