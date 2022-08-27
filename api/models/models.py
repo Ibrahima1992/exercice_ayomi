@@ -1,5 +1,3 @@
-from enum import unique
-from pickle import NONE
 from sqlalchemy import Column, Integer, String
 from config import Base
 
@@ -15,7 +13,7 @@ class User(Base):
     lastname = Column(String(50), nullable=False)
     firstname = Column(String(50), nullable=False)
     login = Column(String(50), nullable=False, unique=True)
-    email = Column(String(50), nullable=False, unique=True)
+    email = Column(String(50), nullable=False)
     password = Column(String(), nullable=False)
 
     @classmethod
@@ -33,13 +31,13 @@ class User(Base):
     def update_user(cls, db, id, data):
         user_in = cls.user_by_id(db=db, id=id)
 
-        if user_in is not None:
-            data.password = Hasher.get_password_hash(data.password)
+        if user_in:
             data = data.__dict__
             db.query(cls).filter(cls.id == id).update(data)
             db.commit()
-            return id
-        return None
+            return user_in
+        else:
+            return user_in
 
     @classmethod
     def user_by_id(

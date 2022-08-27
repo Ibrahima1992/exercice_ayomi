@@ -1,9 +1,9 @@
-from typing import List
-from fastapi import APIRouter, HTTPException, Depends, status
+from typing import List, Union
+from fastapi import Form, APIRouter, HTTPException, Depends, status
 from config import SessionLocal, get_db
 from sqlalchemy.orm import Session
-from models.models import User, Hasher
-from schema import user
+from api.models.models import User, Hasher
+from api.schema import user
 from sqlalchemy import and_
 from sqlalchemy.sql import exists
 from settings import Settings, get_settings
@@ -57,8 +57,9 @@ async def user_add(data: user.UserCreate, db: Session = Depends(get_db)):
     return user
 
 
-@router.post("/users/", response_model=bool)
-async def login(user: user.UserLogin, db: Session = Depends(get_db)):
+# @router.post("/login/", response_model=user.UserOut)
+@router.post("/login/{login}/{password}", response_model=Union[user.UserOut, None])
+async def login(login: str, password: str, db: Session = Depends(get_db)):
     """checking if login and password is already exist or not
 
     Args:
@@ -68,14 +69,17 @@ async def login(user: user.UserLogin, db: Session = Depends(get_db)):
     Returns:
         old_user: return user updated
     """
-    user_in = User.user_by_name(db=db, login=user.login)
-    if user_in is not None and Hasher.verify_password(user.password, user_in.password):
-        return True
+    # print("login:", login, password)
+    # return {"login": str(login), "password": str(password)}
+    user_in = User.user_by_name(db=db, login=login)
+
+    if user_in is not None and Hasher.verify_password(password, user_in.password):
+        return user_in
     else:
-        return False
+        return None
 
 
-@router.put("/users/{id}")
+@router.put("/users/{id}", response_model=dict)
 async def user_update(user: user.UserUpdate, id: int, db: Session = Depends(get_db)):
     """update user with id in param
 
@@ -91,23 +95,21 @@ async def user_update(user: user.UserUpdate, id: int, db: Session = Depends(get_
     Returns:
         user: a new user
     """
-    user_in = (
-        db.query(User)
-        .filter(and_(User.login == user.login, User.email.like(str(user.email))))
-        .first()
-    )
-    if user_in and user_in.id == id:
+
+    user_in = User.user_by_id(db=db, id=id)
+    if user_in is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="user not found"
+        )
+    else:
+
         old_user = User.update_user(db=db, id=id, data=user)
         if old_user is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="not updated or user does not exist",
             )
-        return old_user
-    else:
-        raise HTTPException(
-            status_code=status.HTTP_204_NO_CONTENT, detail="can't updated this user"
-        )
+        return {"new email": user.email}
 
 
 @router.get("/users/{id}", response_model=user.UserOut)

@@ -1,10 +1,9 @@
-from typing import Union
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI
-from routes.user import router
+from api.routes.user import router
 from config import engine
 import uvicorn
-from models import models
+from api.models import models
 from settings import get_settings
 
 
@@ -14,7 +13,13 @@ app = FastAPI()
 
 app.include_router(router=router, prefix="/test-ayomi", tags=["Test"])
 
-origins = ["*"]
+origins = [
+    "http://localhost:3000",
+    "http://192.168.1.35:3000",
+    "http://localhost",
+    "http://172.22.0.3:8000",
+]
+
 
 app.add_middleware(
     CORSMiddleware,

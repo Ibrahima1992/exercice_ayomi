@@ -10,3 +10,6 @@ pylint.html
 scripts/managed_report.venv
 .vscode
 *.back
+**/node_modules
+**/npm-debug.log
+build
