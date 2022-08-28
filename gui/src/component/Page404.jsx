@@ -21,7 +21,7 @@ const Page = styled.div`
 function Page404() {
   return (
     <Page>
-        <h1>PAGE 404</h1>
+      <h1>PAGE 404</h1>
     </Page>
   )
 }

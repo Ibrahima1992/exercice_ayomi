@@ -13,12 +13,7 @@ app = FastAPI()
 
 app.include_router(router=router, prefix="/test-ayomi", tags=["Test"])
 
-origins = [
-    "http://localhost:3000",
-    "http://192.168.1.35:3000",
-    "http://localhost",
-    "http://172.22.0.3:8000",
-]
+origins = ["*"]
 
 
 app.add_middleware(

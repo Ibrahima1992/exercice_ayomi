@@ -1,34 +1,4 @@
 import axios from 'axios'
-// import {data} from '../data.js'
-
-
-
-
-// const API_URL = "http://localhost:8000/test-ayomi/"
-// const login = (login, password) => {
-//     const qs = require('qs')
-//     var data = JSON.stringify({
-//         "login": login,
-//         "password": password
-//     });
-//     const config = {
-//         method: 'post',
-//         url: API_URL + 'login',
-//         header: {
-//             'Content-Type': 'application/json'
-//         },
-//         data: data
-//     }
-
-//     return axios(config)
-//         .then((response) => {
-//             if (response.data) {
-//                 console.log(response.data)
-//                 localStorage.setItem("user", JSON.stringify(response.data))
-//             }
-//             return response.data
-//         })
-// }
 
 const login = (value) => {
     var axios = require('axios');
