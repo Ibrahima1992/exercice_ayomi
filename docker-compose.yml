@@ -38,17 +38,17 @@ services:
     restart: always
     networks:
       - test-ayomi
-  # front:
-  #   container_name: ayomi_gui
-  #   image: app-dev
-  #   build:
-  #     context: ./gui
-  #     dockerfile: Dockerfile.gui
-  #   command: npm start
-  #   restart: always
-  #   volumes:
-  #     - .:/app/src
-  #   ports:
-  #     - 3000:3000
+  front:
+    container_name: ayomi_gui
+    image: app-dev
+    build:
+      context: ./gui
+      dockerfile: Dockerfile.gui
+    command: npm start
+    restart: always
+    volumes:
+      - ./gui:/app
+    ports:
+      - 3000:3000
 networks:
   test-ayomi:
