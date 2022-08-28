@@ -1,12 +1,10 @@
 from typing import List, Union
 from fastapi import Form, APIRouter, HTTPException, Depends, status
-from config import SessionLocal, get_db
+from config import get_db
 from sqlalchemy.orm import Session
 from api.models.models import User, Hasher
 from api.schema import user
 from sqlalchemy import and_
-from sqlalchemy.sql import exists
-from settings import Settings, get_settings
 
 router = APIRouter()
 
@@ -57,7 +55,6 @@ async def user_add(data: user.UserCreate, db: Session = Depends(get_db)):
     return user
 
 
-# @router.post("/login/", response_model=user.UserOut)
 @router.post("/login/{login}/{password}", response_model=Union[user.UserOut, None])
 async def login(login: str, password: str, db: Session = Depends(get_db)):
     """checking if login and password is already exist or not
@@ -69,8 +66,7 @@ async def login(login: str, password: str, db: Session = Depends(get_db)):
     Returns:
         old_user: return user updated
     """
-    # print("login:", login, password)
-    # return {"login": str(login), "password": str(password)}
+
     user_in = User.user_by_name(db=db, login=login)
 
     if user_in is not None and Hasher.verify_password(password, user_in.password):
