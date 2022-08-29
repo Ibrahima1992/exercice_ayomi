@@ -4,7 +4,9 @@ WORKDIR /app
 
 COPY package*.json ./
 
-RUN npm -g install npm@7.19.1
+RUN npm install --force
+
+RUN npm install react-scripts
 
 COPY . .
 
